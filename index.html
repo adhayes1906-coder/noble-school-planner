@@ -310,7 +310,7 @@
     const STORAGE_KEY = 'noble-school-planner-v1';
     const SCHOOL_START = '2026-08-10';
     const SCHOOL_END = '2027-05-26';
-    const FOOTBALL_SCHEDULE_VERSION = 'rawlinson-8th-football-2026-v1';
+    const FOOTBALL_SCHEDULE_VERSION = 'rawlinson-8th-football-2026-v2';
     const classDefaults = [
       {id:'pe',period:1,name:'PE 8 / Athletics (Boys)',bName:'PE 8 / Athletics (Boys)',room:'E101',teacher:'Diaz',start:'08:35',end:'09:20',color:'#2f6fed',weights:{homework:20,quiz:20,test:35,project:25},goal:85},
       {id:'history',period:2,name:'Advanced U.S. History 8',bName:'Advanced U.S. History 8',room:'C217',teacher:'Lopez',start:'09:24',end:'10:14',color:'#b65b19',weights:{homework:20,quiz:20,test:35,project:25},goal:90},
@@ -338,12 +338,13 @@
       {id:'football-8-game-2026-08-29',title:'8th Grade Football Game - at Jefferson',type:'activity',date:'2026-08-29',time:'',recurrence:'none',notes:'Game time was not listed on the supplied football calendar.'},
       {id:'football-8-practice-2026-08-31',title:'8th Grade Football Practice',type:'activity',date:'2026-08-31',time:'06:30',recurrence:'none',notes:'Rawlinson 8th grade football.'},
       {id:'football-8-practice-2026-09-01',title:'8th Grade Football Practice',type:'activity',date:'2026-09-01',time:'06:30',recurrence:'none',notes:'Rawlinson 8th grade football.'},
-      {id:'football-8-practice-2026-09-03',title:'8th Grade Football Practice - Athletic Period',type:'activity',date:'2026-09-03',time:'',recurrence:'none',notes:'The supplied calendar lists practice during the 8th grade athletic period.'},
-      {id:'football-8-game-2026-09-04',title:'8th Grade Football Game - vs. Stinson',type:'activity',date:'2026-09-04',time:'',recurrence:'none',notes:'Location: Clark High School. Game time was not listed on the supplied football calendar.'},
+      {id:'football-8-practice-2026-09-02',title:'8th Grade Football Practice',type:'activity',date:'2026-09-02',time:'06:30',recurrence:'none',notes:'Rawlinson 8th grade football.'},
+      {id:'football-8-practice-2026-09-04',title:'8th Grade Football Practice - Athletic Period',type:'activity',date:'2026-09-04',time:'',recurrence:'none',notes:'The supplied calendar lists practice during the 8th grade athletic period.'},
+      {id:'football-8-game-2026-09-05',title:'8th Grade Football Game - vs. Stinson',type:'activity',date:'2026-09-05',time:'',recurrence:'none',notes:'Location: Clark High School. Game time was not listed on the supplied football calendar.'},
       {id:'football-8-practice-2026-09-08',title:'8th Grade Football Practice',type:'activity',date:'2026-09-08',time:'06:30',recurrence:'none',notes:'Rawlinson 8th grade football.'},
       {id:'football-8-practice-2026-09-09',title:'8th Grade Football Practice',type:'activity',date:'2026-09-09',time:'07:15',recurrence:'none',notes:'Rawlinson 8th grade football.'},
       {id:'football-8-practice-2026-09-10',title:'8th Grade Football Practice',type:'activity',date:'2026-09-10',time:'06:30',recurrence:'none',notes:'Rawlinson 8th grade football.'},
-      {id:'football-8-game-2026-09-11',title:'8th Grade Football Game - at Luna',type:'activity',date:'2026-09-11',time:'',recurrence:'none',notes:'Game time was not listed on the supplied football calendar.'},
+      {id:'football-8-game-2026-09-12',title:'8th Grade Football Game - at Luna',type:'activity',date:'2026-09-12',time:'',recurrence:'none',notes:'Game time was not listed on the supplied football calendar.'},
       {id:'football-8-practice-2026-09-14',title:'8th Grade Football Practice',type:'activity',date:'2026-09-14',time:'06:40',recurrence:'none',notes:'Rawlinson 8th grade football.'},
       {id:'football-8-practice-2026-09-16',title:'8th Grade Football Practice',type:'activity',date:'2026-09-16',time:'07:15',recurrence:'none',notes:'Rawlinson 8th grade football.'},
       {id:'football-8-practice-2026-09-17',title:'8th Grade Football Practice',type:'activity',date:'2026-09-17',time:'06:40',recurrence:'none',notes:'Rawlinson 8th grade football.'},
@@ -406,10 +407,8 @@
 
     function clone(v){ return JSON.parse(JSON.stringify(v)); }
     function addFootballSchedule(events=[]){
-      const merged=Array.isArray(events)?clone(events):[];
-      const ids=new Set(merged.map(e=>e.id));
-      footballEvents.forEach(e=>{if(!ids.has(e.id))merged.push(clone(e));});
-      return merged;
+      const otherEvents=(Array.isArray(events)?clone(events):[]).filter(e=>!String(e.id||'').startsWith('football-8-'));
+      return [...otherEvents,...clone(footballEvents)];
     }
     function loadState(){
       try {
@@ -421,12 +420,12 @@
           profile:{...defaultState.profile,...saved.profile}, school:{...defaultState.school,...saved.school},
           settings:{...defaultState.settings,...saved.settings}, routines:{...defaultState.routines,...saved.routines},
           classes:Array.isArray(saved.classes)&&saved.classes.length?saved.classes:clone(classDefaults),
-          assignments:Array.isArray(saved.assignments)?saved.assignments:[], events:needsFootballUpdate?addFootballSchedule(Array.isArray(saved.events)?saved.events:defaultState.events):Array.isArray(saved.events)?saved.events:clone(defaultState.events),
+          assignments:Array.isArray(saved.assignments)?saved.assignments:[], events:addFootballSchedule(Array.isArray(saved.events)?saved.events:defaultState.events),
           grades:Array.isArray(saved.grades)?saved.grades:[], classNotes:saved.classNotes||{}, studyLinks:saved.studyLinks||[],
           studySessions:saved.studySessions||[], routineLog:saved.routineLog||{}, habitLog:saved.habitLog||{}, weeklyReviews:saved.weeklyReviews||{}, notified:saved.notified||{},
           footballScheduleVersion:FOOTBALL_SCHEDULE_VERSION
         };
-        if(needsFootballUpdate)localStorage.setItem(STORAGE_KEY,JSON.stringify(merged));
+        if(needsFootballUpdate||JSON.stringify(saved.events||[])!==JSON.stringify(merged.events))localStorage.setItem(STORAGE_KEY,JSON.stringify(merged));
         return merged;
       } catch(e){ return clone(defaultState); }
     }
