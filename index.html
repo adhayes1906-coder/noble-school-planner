@@ -313,9 +313,9 @@
     const SCHOOL_START = '2026-08-10';
     const SCHOOL_END = '2027-05-26';
     const FOOTBALL_SCHEDULE_VERSION = 'rawlinson-8th-football-2026-v2';
-    const GRADING_POLICY_VERSION = 'rawlinson-syllabus-weights-2026-v2';
+    const GRADING_POLICY_VERSION = 'rawlinson-syllabus-weights-2026-v3';
     const classDefaults = [
-      {id:'pe',period:1,name:'PE 8 / Athletics (Boys)',bName:'PE 8 / Athletics (Boys)',room:'E101',teacher:'Diaz',start:'08:35',end:'09:20',color:'#2f6fed',weights:{homework:20,quiz:20,test:35,project:25},goal:85},
+      {id:'pe',period:1,name:'PE 8 / Athletics (Boys)',bName:'PE 8 / Athletics (Boys)',room:'E101',teacher:'Diaz',start:'08:35',end:'09:20',color:'#2f6fed',weights:{formative:50,summative:50},gradingPolicy:{type:'formative-summative',formative:50,summative:50,source:'Rawlinson Boys Athletics syllabus'},goal:85},
       {id:'history',period:2,name:'Advanced U.S. History 8',bName:'Advanced U.S. History 8',room:'C217',teacher:'Lopez',start:'09:24',end:'10:14',color:'#b65b19',weights:{homework:20,quiz:20,test:35,project:25},goal:90},
       {id:'spanish',period:3,name:'Spanish I MS',bName:'Spanish I MS',room:'B109',teacher:'Medina',start:'10:18',end:'11:03',color:'#8c4bc0',weights:{formative:50,summative:50},gradingPolicy:{type:'formative-summative',formative:50,summative:50,source:'Lydia Medina Spanish 1 syllabus'},goal:90},
       {id:'avid',period:4,name:'AVID A HS',bName:'AVID A HS',room:'B204',teacher:'Reyes',start:'11:07',end:'11:52',color:'#cf3b67',weights:{formative:50,summative:50},gradingPolicy:{type:'formative-summative',formative:50,summative:50,semesterExam:10,source:'Coach Reyes AVID 1 syllabus'},goal:90},
@@ -425,9 +425,10 @@
       return [...otherEvents,...clone(footballEvents)];
     }
     function applyKnownGradingPolicy(classes=[]){
-      const list=Array.isArray(classes)?clone(classes):clone(classDefaults),avid=list.find(c=>c.id==='avid'),spanish=list.find(c=>c.id==='spanish');
+      const list=Array.isArray(classes)?clone(classes):clone(classDefaults),avid=list.find(c=>c.id==='avid'),spanish=list.find(c=>c.id==='spanish'),pe=list.find(c=>c.id==='pe');
       if(avid){avid.weights={formative:50,summative:50};avid.gradingPolicy={type:'formative-summative',formative:50,summative:50,semesterExam:10,source:'Coach Reyes AVID 1 syllabus'};}
       if(spanish){spanish.weights={formative:50,summative:50};spanish.gradingPolicy={type:'formative-summative',formative:50,summative:50,source:'Lydia Medina Spanish 1 syllabus'};}
+      if(pe){pe.weights={formative:50,summative:50};pe.gradingPolicy={type:'formative-summative',formative:50,summative:50,source:'Rawlinson Boys Athletics syllabus'};}
       return list;
     }
     function loadState(){
