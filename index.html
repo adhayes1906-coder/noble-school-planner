@@ -329,15 +329,128 @@
       {id:'ela',period:8,name:'Advanced ELA 8',bName:'Advanced ELA 8',room:'B207',teacher:'Rangel',start:'15:07',end:'15:55',color:'#a62126',weights:{homework:20,quiz:20,test:35,project:25},goal:90}
     ];
     const TUTORING_HOURS = [
-      {classId:'spanish',teacher:'Lydia Medina',room:'B109',source:'Spanish 1 syllabus',sessions:[
-        {days:'Thursday',time:'7:50–8:30 AM',note:'Morning tutoring'},
-        {days:'Wednesday & Thursday',time:'4:00–4:30 PM',note:'After school by appointment'}
-      ]},
-      {classId:'avid',teacher:'Coach Roger Reyes',room:'B204',source:'Coach Reyes AVID 1 syllabus',sessions:[
-        {days:'Tuesday–Friday',time:'8:00–8:30 AM',note:'Morning tutoring'},
-        {days:'After school',time:'By appointment only',note:'Contact Coach Reyes to arrange a time'}
-      ]}
-    ];
+  {
+    "classId": "spanish",
+    "teacher": "Lydia Medina",
+    "room": "B109",
+    "source": "Spanish 1 syllabus",
+    "sessions": [
+      {
+        "days": "Thursday",
+        "time": "7:50–8:30 AM",
+        "note": "Morning tutoring"
+      },
+      {
+        "days": "Wednesday & Thursday",
+        "time": "4:00–4:30 PM",
+        "note": "After school by appointment"
+      }
+    ]
+  },
+  {
+    "classId": "avid",
+    "teacher": "Coach Roger Reyes",
+    "room": "B204",
+    "source": "Coach Reyes AVID 1 syllabus",
+    "sessions": [
+      {
+        "days": "Tuesday–Friday",
+        "time": "8:00–8:30 AM",
+        "note": "Morning tutoring"
+      },
+      {
+        "days": "After school",
+        "time": "By appointment only",
+        "note": "Contact Coach Reyes to arrange a time"
+      }
+    ]
+  },
+  {
+    "classId": "algebra",
+    "teacher": "Clayton Sosa (Noble’s teacher)",
+    "room": "B216",
+    "source": "Clayton Sosa Advanced MS Algebra I syllabus",
+    "sessions": [
+      {
+        "days": "Tuesday & Thursday",
+        "time": "7:45–8:30 AM",
+        "note": "Morning tutoring"
+      }
+    ]
+  },
+  {
+    "classId": "history",
+    "teacher": "Juliette Lopez (Noble’s teacher)",
+    "room": "Confirm with teacher",
+    "source": "Juliette Lopez · Advanced 8th Grade U.S. History tutoring email (August 21, 2026)",
+    "sessions": [
+      {
+        "days": "Wednesday morning",
+        "time": "Starts at 8:00 AM",
+        "note": "End time and tutoring location were not supplied in the email"
+      },
+      {
+        "days": "Wednesday after school",
+        "time": "Starts at 4:00 PM",
+        "note": "End time and tutoring location were not supplied in the email"
+      },
+      {
+        "days": "Lunch",
+        "time": "By appointment",
+        "note": "Contact Ms. Lopez to arrange lunch tutoring"
+      }
+    ]
+  },
+  {
+    "classId": "science",
+    "teacher": "Mr. Herrera (Noble’s teacher)",
+    "room": "B221",
+    "source": "Speelman Meet the Teacher · tutoring slide (page 7)",
+    "sessions": [
+      {
+        "days": "Wednesday–Friday",
+        "time": "8:00–8:30 AM",
+        "note": "Morning tutoring; summative assessments must be completed with your own teacher"
+      }
+    ]
+  },
+  {
+    "classId": "science",
+    "teacher": "Mrs. Speelman (additional 8th-grade science support)",
+    "room": "B218",
+    "source": "Speelman Meet the Teacher · tutoring slide (page 7)",
+    "sessions": [
+      {
+        "days": "Monday",
+        "time": "8:00–8:30 AM",
+        "note": "Additional science tutoring; summative assessments must be completed with Mr. Herrera"
+      },
+      {
+        "days": "By appointment",
+        "time": "Arrange with teacher",
+        "note": "Contact Mrs. Speelman for an appointment"
+      }
+    ]
+  },
+  {
+    "classId": "science",
+    "teacher": "Mrs. Zapata (additional 8th-grade science support)",
+    "room": "B220",
+    "source": "Speelman Meet the Teacher · tutoring slide (page 7)",
+    "sessions": [
+      {
+        "days": "Monday",
+        "time": "8:00–8:30 AM",
+        "note": "Additional science tutoring; summative assessments must be completed with Mr. Herrera"
+      },
+      {
+        "days": "By appointment",
+        "time": "Arrange with teacher",
+        "note": "Contact Mrs. Zapata for an appointment"
+      }
+    ]
+  }
+];
     const footballEvents = [
       {id:'football-8-practice-2026-08-11',title:'8th Grade Football Practice',type:'activity',date:'2026-08-11',time:'06:30',recurrence:'none',notes:'First day of football practice.'},
       {id:'football-8-practice-2026-08-12',title:'8th Grade Football Practice',type:'activity',date:'2026-08-12',time:'06:30',recurrence:'none',notes:'Rawlinson 8th grade football.'},
@@ -708,7 +821,7 @@
       const covered=new Set(TUTORING_HOURS.map(x=>x.classId));
       const cards=TUTORING_HOURS.map(item=>{const c=classById(item.classId);return `<div class="card card-pad" style="border-top:5px solid ${esc(c.color)}"><div class="card-title"><div><h3>${esc(c.name)}</h3><p>Period ${Number(c.period)} · ${esc(item.teacher)}</p></div><span class="pill blue">${esc(item.room)}</span></div><div class="day-agenda">${item.sessions.map(s=>`<div class="agenda-row" style="--event-color:${esc(c.color)}"><strong>${esc(s.days)}</strong><small>${esc(s.time)} · ${esc(s.note)}</small></div>`).join('')}</div><div class="privacy-note" style="margin-top:12px">Source: ${esc(item.source)}</div></div>`;}).join('');
       const missing=state.classes.filter(c=>!c.isLunch&&!covered.has(c.id));
-      document.getElementById('tutoring').innerHTML=`<div class="page-head"><div><h2>Tutoring Hours</h2><p>Teacher support times from the supplied 2026–27 syllabi.</p></div><button class="btn secondary" onclick="window.print()">Print</button></div><div class="grid two">${cards}</div><div class="card card-pad" style="margin-top:16px"><div class="card-title"><div><h3>No hours supplied yet</h3><p>These classes did not have an attached tutoring schedule.</p></div></div><div class="meta" style="display:flex;flex-wrap:wrap;gap:8px">${missing.length?missing.map(c=>`<span class="pill">P${Number(c.period)} · ${esc(c.name)}</span>`).join(''):'<span class="pill green">All class tutoring schedules supplied</span>'}</div><div class="privacy-note" style="margin-top:12px">Check with the teacher before attending. Tutoring schedules may change during the school year.</div></div>`;
+      document.getElementById('tutoring').innerHTML=`<div class="page-head"><div><h2>Tutoring Hours</h2><p>Teacher support times from the supplied syllabi and teacher updates. Science team tutors are labeled separately.</p></div><button class="btn secondary" onclick="window.print()">Print</button></div><div class="grid two">${cards}</div><div class="card card-pad" style="margin-top:16px"><div class="card-title"><div><h3>No hours supplied yet</h3><p>These classes did not have an attached tutoring schedule.</p></div></div><div class="meta" style="display:flex;flex-wrap:wrap;gap:8px">${missing.length?missing.map(c=>`<span class="pill">P${Number(c.period)} · ${esc(c.name)}</span>`).join(''):'<span class="pill green">All class tutoring schedules supplied</span>'}</div><div class="privacy-note" style="margin-top:12px">Check with the teacher before attending. Tutoring schedules may change during the school year.</div></div>`;
     }
     function renderStudy(){
       const tests=sortedAssignments(state.assignments.filter(a=>!a.completed&&['test','quiz','project','presentation'].includes(a.type)&&a.dueDate>=localISO()));
